@@ -1,5 +1,6 @@
 import * as React from "react";
-import Login from "./components/login";
+import Signin from "./components/signin";
+import Signup from "./components/signup";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -8,11 +9,16 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Signin">
         <Stack.Screen
           options={{ headerShown: false }}
-          name="Login"
-          component={Login}
+          name="Signin"
+          component={Signin}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Signup"
+          component={Signup}
         />
       </Stack.Navigator>
     </NavigationContainer>

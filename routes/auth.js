@@ -6,11 +6,17 @@ import jwt from "jsonwebtoken"; // Double check to see if "jwt" works.
 const authRoute = express.Router();
 
 authRoute.post("/signup", async (request, reply) => {
-  // Check if user exists already
+  // Check if username and email exists already
   const emailExist = await User.findOne({ Email: request.body.Email });
 
   if (emailExist) {
     return reply.status(400).json({ error: "Email Already in Use" });
+  }
+
+  const userExist = await User.findOne({ User: request.body.User });
+
+  if (userExist) {
+    return reply.status(400).json({ error: "Username is Already Taken" });
   }
 
   // Hash Password
@@ -19,8 +25,7 @@ authRoute.post("/signup", async (request, reply) => {
 
   // Create User
   const user = new User({
-    First: request.body.First,
-    Last: request.body.Last,
+    User: request.body.User,
     Email: request.body.Email,
     Password: hashPassword,
   });
@@ -40,8 +45,8 @@ authRoute.post("/signup", async (request, reply) => {
 });
 
 authRoute.post("/signin", async (request, reply) => {
-  // Check if user with email exist
-  const user = await User.findOne({ Email: request.body.Email });
+  // Check if user with username exist
+  const user = await User.findOne({ User: request.body.User });
 
   if (!user) {
     return reply.status(400).json({ error: "This user does not exist" });

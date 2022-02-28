@@ -11,13 +11,13 @@ import { Link } from "@react-navigation/native";
 import { useFonts, PTSans_400Regular } from "@expo-google-fonts/pt-sans";
 import AppLoading from "expo-app-loading";
 
-export default function Login() {
+export default function Signin({ navigation }) {
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
   });
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
 
   const onSubmit = () => {
     let headersList = {
@@ -25,11 +25,11 @@ export default function Login() {
     };
 
     let bodyContent = JSON.stringify({
-      Email: email,
+      User: user,
       Password: password,
     });
 
-    fetch("https://bc67-188-149-22-223.ngrok.io/signin", {
+    fetch("http://240d-188-149-22-223.ngrok.io/signin", {
       method: "POST",
       body: bodyContent,
       headers: headersList,
@@ -62,8 +62,8 @@ export default function Login() {
               style={styles.Txt683}
               placeholder="Användarnamn"
               placeholderTextColor="#ffff"
-              value={email}
-              onChangeText={setEmail}
+              value={user}
+              onChangeText={setUser}
             />
           </View>
           <View style={styles.Group340}>
@@ -76,9 +76,9 @@ export default function Login() {
               onChangeText={setPassword}
             />
           </View>
-          {/* <Link to={{ screen: "Signup" }} color="white">
-            Sign up here!
-          </Link> */}
+          <Link to={{ screen: "Signup" }} style={styles.signup}>
+            Inte medlem? Klicka för att registrera här!
+          </Link>
           <TouchableOpacity style={styles.Group843} onPress={onSubmit}>
             <Text style={styles.Txt485}>Logga in</Text>
           </TouchableOpacity>
@@ -93,6 +93,12 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
+  signup: {
+    color: "white",
+    marginBottom: 40,
+    fontFamily: "PTSans_400Regular",
+    fontStyle: "italic",
+  },
   Login: {
     display: "flex",
     flexDirection: "column",
@@ -211,5 +217,6 @@ const styles = StyleSheet.create({
   Top: {
     width: 42,
     height: 60,
+    marginLeft: 32,
   },
 });
