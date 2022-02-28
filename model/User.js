@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
       min: 8,
       max: 256,
     },
+    Admin: { type: Boolean, default: false },
   },
   //   remove if it's not needed:
   { autoIndex: true, timestamps: true }

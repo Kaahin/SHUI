@@ -1,6 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import authRoute from "./routes/auth.js";
+import helmet from "helmet";
+
 dotenv.config();
 
 // Connect to DB
@@ -18,11 +21,14 @@ mongoose.connect(
 const db = mongoose.connection;
 db.on("error", console.log);
 
-//TODO:: import ROUTE AUTH.js
 // Middlewares
 const app = express();
 app.use(express.json());
+app.use(helmet());
+// Middlewares for routes
+
+app.use("/", authRoute);
 
 app.listen(process.env.PORT, () => {
-  console.log("Server running");
+  console.log(`Server running at ${process.env.PORT}`);
 });

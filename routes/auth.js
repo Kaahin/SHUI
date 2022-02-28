@@ -1,16 +1,16 @@
-import User from "../model/User";
+import User from "../model/User.js";
 import express from "express";
 import bcryptjs from "bcryptjs";
-import * as jwt from "jsonwebtoken"; // Double check to see if "jwt" works.
+import jwt from "jsonwebtoken"; // Double check to see if "jwt" works.
 
-const authRoute = express().router();
+const authRoute = express.Router();
 
-authRoute.post("/register", async (request, reply) => {
+authRoute.post("/signup", async (request, reply) => {
   // Check if user exists already
   const emailExist = await User.findOne({ Email: request.body.Email });
 
   if (emailExist) {
-    return request.status(400).json({ error: "Email Already in Use" });
+    return reply.status(400).json({ error: "Email Already in Use" });
   }
 
   // Hash Password
@@ -22,11 +22,11 @@ authRoute.post("/register", async (request, reply) => {
     First: request.body.First,
     Last: request.body.Last,
     Email: request.body.Email,
-    Password: request.body.Password,
+    Password: hashPassword,
   });
 
   try {
-    const savedUser = await user.save(); // saved user object in DB
+    await user.save(); // saves user object in database
     const token = jwt.sign(
       {
         _id: user._id,
@@ -37,6 +37,30 @@ authRoute.post("/register", async (request, reply) => {
   } catch (error) {
     reply.status(400).json(error);
   }
+});
+
+authRoute.post("/signin", async (request, reply) => {
+  // Check if user with email exist
+  const user = await User.findOne({ Email: request.body.Email });
+
+  if (!user) {
+    return reply.status(400).json({ error: "This user does not exist" });
+  }
+
+  // Check if password is true
+
+  const validPassword = await bcryptjs.compare(
+    request.body.Password,
+    user.Password
+  );
+
+  if (!validPassword) {
+    return reply.status(400).json({ error: "Invalid Password" });
+  }
+
+  // Create and Assign Token
+  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+  reply.header("auth-token", token).json({ token });
 });
 
 export default authRoute;
